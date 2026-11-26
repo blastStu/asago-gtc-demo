@@ -960,6 +960,104 @@
       line-height: 1.35;
     }
 
+    .overview-chapter { background: radial-gradient(ellipse at 55% 65%, #18323b, transparent 72%); }
+    .overview-map { margin-top: clamp(18px, 3vh, 30px); }
+    .overview-grid {
+      --overview-gap: 48px;
+      display: grid;
+      grid-template-areas:
+        "agent agent-gateway gateway gateway-models models"
+        "policy-agent . guard-gateway mcp-gateway ."
+        "policies . guardrails guard-mcp mcp"
+        "asago-policy . asago-guard . ."
+        "asago asago asago . .";
+      grid-template-columns: repeat(2, minmax(0, 1fr) var(--overview-gap)) minmax(0, 1fr);
+      align-items: stretch;
+      margin-top: 15px;
+    }
+    .overview-grid > .flow-node, .overview-grid > .flow-output {
+      align-content: center;
+      padding: 14px 16px;
+    }
+    .overview-grid > .overview-agent {
+      grid-area: agent;
+      background-image: repeating-linear-gradient(135deg, transparent 0 7px, color-mix(in srgb, var(--accent) 18%, transparent) 7px 9px);
+    }
+    .overview-agent-card { margin-top: 7px; padding: 8px 10px; }
+    .overview-gateway { grid-area: gateway; }
+    .overview-models { grid-area: models; }
+    .overview-policies { grid-area: policies; }
+    .overview-guardrails { grid-area: guardrails; }
+    .overview-mcp { grid-area: mcp; }
+    .overview-asago { grid-area: asago; }
+    .overview-grid .overview-agent .label { color: var(--accent); font-size: 11px; }
+    .overview-link {
+      position: relative;
+      display: grid;
+      min-height: 32px;
+      place-content: center;
+      color: var(--flow-line);
+      font: 27px/1 var(--mono);
+    }
+    .overview-agent-gateway { grid-area: agent-gateway; }
+    .overview-gateway-models { grid-area: gateway-models; }
+    .overview-policy-agent { grid-area: policy-agent; }
+    .overview-guard-gateway { grid-area: guard-gateway; }
+    .overview-mcp-gateway { grid-area: mcp-gateway; }
+    .overview-guard-mcp { grid-area: guard-mcp; }
+    .overview-asago-policy { grid-area: asago-policy; }
+    .overview-asago-guard { grid-area: asago-guard; }
+    .overview-policy-agent, .overview-asago-policy, .overview-asago-guard { color: var(--accent); }
+    .overview-mask {
+      position: absolute;
+      inset: 50% 0 auto calc(50% + 15px);
+      transform: translateY(-50%);
+      color: var(--muted);
+      font: 600 11px/1.2 Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    .overview-mobile { display: none; }
+    @media (min-width: 821px) {
+      .overview-link::before, .overview-link::after {
+        position: absolute;
+        width: 7px;
+        height: 7px;
+        border: solid currentColor;
+        border-width: 1px 1px 0 0;
+      }
+      :is(.overview-agent-gateway, .overview-gateway-models, .overview-guard-mcp) {
+        background: linear-gradient(currentColor, currentColor) center / calc(100% - 12px) 1px no-repeat;
+      }
+      :is(.overview-agent-gateway, .overview-gateway-models, .overview-guard-mcp)::after {
+        inset: calc(50% - 3.5px) 7px auto auto;
+        transform: rotate(45deg);
+        content: "";
+      }
+      :is(.overview-agent-gateway, .overview-guard-mcp)::before {
+        inset: calc(50% - 3.5px) auto auto 7px;
+        transform: rotate(225deg);
+        content: "";
+      }
+      :is(.overview-policy-agent, .overview-guard-gateway, .overview-asago-policy, .overview-asago-guard) {
+        background: linear-gradient(currentColor, currentColor) center / 1px calc(100% - 12px) no-repeat;
+      }
+      :is(.overview-policy-agent, .overview-guard-gateway, .overview-asago-policy, .overview-asago-guard)::before {
+        inset: 7px auto auto calc(50% - 3.5px);
+        transform: rotate(-45deg);
+        content: "";
+      }
+      .overview-guard-gateway::after {
+        inset: auto auto 7px calc(50% - 3.5px);
+        transform: rotate(135deg);
+        content: "";
+      }
+      .overview-mcp-gateway {
+        min-height: var(--overview-gap);
+        background: linear-gradient(45deg, transparent calc(50% - .5px), currentColor 0 calc(50% + .5px), transparent 0) center / calc(100% - 12px) calc(100% - 12px) no-repeat;
+      }
+      .overview-mcp-gateway::before { inset: 6px auto auto 6px; transform: rotate(-90deg); content: ""; }
+      .overview-mcp-gateway::after { inset: auto 6px 6px auto; transform: rotate(90deg); content: ""; }
+    }
+
     .stage:not([hidden]) .canvas-inner { animation: appear 230ms ease-out both; }
     @keyframes appear {
       from { opacity: .4; transform: translateY(5px); }
@@ -973,6 +1071,11 @@
       .flow-node, .flow-output, .flow-input, .flow-loop { transition: none; }
     }
 
+    @media (max-width: 1100px) {
+      .topbar { gap: 10px; }
+      .chapter-nav { gap: 2px; }
+      .chapter-nav a { padding-inline: 5px; }
+    }
     @media (max-width: 980px) {
       .brand .event-location { display: none; }
     }
@@ -1024,9 +1127,30 @@
       #workflow-diagram { display: flex; flex-direction: column; }
       .flow-controls .flow-status { flex-basis: 100%; }
       .flow-jump { order: 1; align-self: flex-end; margin-top: 10px; }
+      .overview-chapter { padding-block: 24px; }
+      .overview-grid {
+        grid-template-areas:
+          "agent agent agent"
+          "agent-gateway agent-gateway agent-gateway"
+          "gateway gateway gateway"
+          "gateway-models . mcp-gateway"
+          "models . mcp"
+          "guardrails guardrails guardrails"
+          "policies policies policies"
+          "asago asago asago";
+        grid-template-columns: minmax(0, 1fr) 10px minmax(0, 1fr);
+      }
+      .overview-grid > .flow-node, .overview-grid > .flow-output { padding: 11px 12px; }
+      .overview-agent-gateway::before { content: "↕"; }
+      .overview-gateway-models::before { content: "↓"; }
+      .overview-mcp-gateway::before { content: "↕"; }
+      :is(.overview-policy-agent, .overview-guard-gateway, .overview-guard-mcp, .overview-asago-policy, .overview-asago-guard) { display: none; }
+      .overview-grid > :is(.overview-guardrails, .overview-policies, .overview-asago) { margin-top: 10px; }
+      .overview-mobile { display: block; }
     }
     @media (max-width: 660px) {
       .shell { width: calc(100% - 32px); }
+      .chapter-nav a { padding-inline: 4px; }
       .brand { gap: 9px; }
       .logo { width: 90px; }
       .event { padding-left: 9px; font-size: 12px; }
@@ -1049,10 +1173,12 @@
     }
     @media (max-width: 430px) {
       #theme-toggle { padding-inline: 8px; font-size: 12px; }
+      .chapter-nav a { font-size: 13px; }
     }
     @media (max-width: 370px) {
+      :root { --header-height: 134px; }
       .stage-copy, .canvas { padding: 16px; }
-      .chapter-nav a { padding-inline: 4px; font-size: 13px; }
+      .chapter-nav { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
       .source-list { grid-template-columns: 1fr; }
     }
     @media (max-height: 790px) and (min-width: 661px) {
@@ -1127,6 +1253,7 @@
       .problem-chapter { background: radial-gradient(ellipse at 83% 53%, #f6e8e8, transparent 69%); }
       .workflow-chapter { background: radial-gradient(ellipse at 50% 56%, #e3edf5, transparent 70%); }
       .source-chapter { background: radial-gradient(ellipse at 20% 62%, #dceff0, transparent 67%); }
+      .overview-chapter { background: radial-gradient(ellipse at 55% 65%, #dfeff2, transparent 72%); }
       .source-feature {
         border-color: #a7c4ca;
         background:
@@ -1218,7 +1345,7 @@
       .flow-input.is-active { border-color: #4682b2; background: #dbeefe; }
       .flow-input.is-feedback { border-color: #619a76; background: #e1f3e6; }
       .flow-input.is-feedback::before, .flow-input.is-feedback::after { color: #39714e; }
-      .flow-node { border-color: #8eabbe; background: var(--surface); }
+      .flow-node { border-color: #8eabbe; background-color: var(--surface); }
       .flow-output { border-color: var(--border); background: #e9f0f6; }
       .flow-policy { border-color: #83ad9a; background: #e8f3ec; }
       .flow-node .flow-tool { border-color: #96b4a7; background: #eaf4ee; }
@@ -1281,6 +1408,7 @@
         <a href="#workflow">Workflow</a>
         <a href="#demo">Demo</a>
         <a href="#open-source">GitHub</a>
+        <a href="#overview">Zoom out</a>
       </nav>
       <button class="quiet" id="theme-toggle" type="button" aria-label="Switch to light mode">Light mode</button>
     </div>
@@ -1607,6 +1735,62 @@
             </li>
           </ul>
         </div>
+        <div class="chapter-actions">
+          <a class="section-jump" href="#overview">See where Asago fits <span aria-hidden="true">↓</span></a>
+        </div>
+      </div>
+    </section>
+
+    <section class="chapter overview-chapter" id="overview" aria-labelledby="overview-title">
+      <div class="shell">
+        <h2 class="chapter-title" id="overview-title">Enforcing Mitigations in Red Hat AI</h2>
+        <figure class="workflow-map overview-map" aria-labelledby="overview-diagram-title" aria-describedby="overview-summary">
+          <h3 class="flow-phase-title" id="overview-diagram-title">Example deployment</h3>
+          <div class="overview-grid">
+            <div class="flow-node overview-agent">
+              <p class="label">NVIDIA OpenShell sandbox</p>
+              <div class="flow-node overview-agent-card">
+                <h4>Your Agent</h4>
+              </div>
+            </div>
+            <span class="overview-link overview-agent-gateway" aria-hidden="true"></span>
+            <div class="flow-node overview-gateway">
+              <h4>AI gateway</h4>
+              <p>Routes model requests</p>
+            </div>
+            <span class="overview-link overview-gateway-models" aria-hidden="true"></span>
+            <div class="flow-output overview-models">
+              <h4>Model endpoints</h4>
+              <p>Self-hosted models</p>
+              <p>Provider-hosted models</p>
+            </div>
+            <span class="overview-link overview-policy-agent" aria-hidden="true"></span>
+            <div class="overview-link overview-guard-gateway" aria-hidden="true">
+              <span class="overview-mask">Input/output masking</span>
+            </div>
+            <span class="overview-link overview-mcp-gateway" aria-hidden="true"></span>
+            <div class="flow-output flow-policy overview-policies">
+              <h4>OpenShell policies</h4>
+              <p>Limit what the agent can access in the sandbox</p>
+            </div>
+            <div class="flow-output flow-policy overview-guardrails">
+              <h4>NeMo Guardrails</h4>
+              <p>Multimodal and multilingual</p>
+              <p class="overview-mobile">Mask gateway inputs and outputs, and check tool traffic.</p>
+            </div>
+            <span class="overview-link overview-guard-mcp" aria-hidden="true"></span>
+            <div class="flow-node overview-mcp">
+              <h4>MCP tools</h4>
+            </div>
+            <span class="overview-link overview-asago-policy" aria-hidden="true"></span>
+            <span class="overview-link overview-asago-guard" aria-hidden="true"></span>
+            <div class="flow-node is-active overview-asago">
+              <h4>Asago pipeline</h4>
+              <p>Recommends OpenShell policies and NeMo Guardrails configurations for review.</p>
+            </div>
+          </div>
+          <figcaption id="overview-summary" hidden>The agent runs in OpenShell and connects to the AI gateway. The gateway connects to model endpoints and MCP tools. NeMo Guardrails check gateway inputs and outputs and tool traffic. Asago recommends policies for the sandbox and configurations for the guardrails.</figcaption>
+        </figure>
       </div>
     </section>
   </main>
